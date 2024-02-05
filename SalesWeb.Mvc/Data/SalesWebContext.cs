@@ -7,5 +7,7 @@ public class SalesWebContext : DbContext
 {
     public SalesWebContext(DbContextOptions<SalesWebContext> options) : base (options)
     {}
-    DbSet<Departament> Departaments { get; set; }
+    public DbSet<Departament> Departaments { get; set; }
+    public DbSet<Seller> Sellers { get; set; }
+    public DbSet<SalesRecord> SalesRecords { get; set; }
 }
