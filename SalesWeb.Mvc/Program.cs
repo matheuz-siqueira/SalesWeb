@@ -15,6 +15,8 @@ builder.Services.AddDbContext<SalesWebContext>(options =>
     );
 });
 
+builder.Services.AddScoped<SeedingService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,6 +26,9 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+if(app.Environment.IsDevelopment())
+    Seed(app); 
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
@@ -37,3 +42,12 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+static void Seed(IApplicationBuilder app)
+{
+    using var serviceScope = app.ApplicationServices.CreateAsyncScope();
+    var seed = serviceScope.ServiceProvider
+        .GetService<SeedingService>(); 
+
+    seed.Seed();
+}
