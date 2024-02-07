@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using SalesWeb.Mvc.Models;
 using SalesWeb.Mvc.Models.ViewModels;
@@ -44,12 +45,12 @@ public class SellersController : Controller
     {
         if(id is null)
         {
-            return NotFound(); 
+            return RedirectToAction(nameof(Error), new { message = "Invalid request" });
         }
         var seller = await _sellerService.GetById(id.Value); 
         if(seller is null)
         {
-            return NotFound(); 
+            return RedirectToAction(nameof(Error), new { message = "Seller not found" }); 
         }
         return View(seller); 
     }
@@ -66,12 +67,12 @@ public class SellersController : Controller
     {
         if(id is null)
         {
-            return NotFound(); 
+            return RedirectToAction(nameof(Error), new { message = "Invalid request" });
         }
         var seller = await _sellerService.GetById(id.Value); 
         if(seller is null)
         {
-            return NotFound(); 
+            return RedirectToAction(nameof(Error), new { message = "Seller not found" });
         } 
         return View(seller); 
     }
@@ -80,12 +81,12 @@ public class SellersController : Controller
     {
         if(id is null)
         {
-            return NotFound(); 
+            return RedirectToAction(nameof(Error), new { message = "Invalid request" }); 
         }
         var seller = await _sellerService.GetById(id.Value); 
         if(seller is null)
         {
-            return NotFound(); 
+            return RedirectToAction(nameof(Error), new { message = "Seller not found" });
         }
         List<Departament> departaments = (List<Departament>)await _departamentService.GetAll(); 
         SellerFormViewModel viewModel = new() { Seller = seller, Departaments = departaments}; 
@@ -102,7 +103,7 @@ public class SellersController : Controller
         }
         if(id != seller.Id) 
         {
-            return BadRequest(); 
+            return RedirectToAction(nameof(Error), new { message = "Id mismatch" }); 
         }
 
         try
@@ -110,14 +111,23 @@ public class SellersController : Controller
             await _sellerService.Update(seller); 
             return RedirectToAction(nameof(Index));
         }
-        catch(NotFoundException )
+        catch(NotFoundException e)
         {
-            return NotFound();
+            return RedirectToAction(nameof(Error), new { message = e.Message });
         }
-        catch(DbConcurrencyException)
+        catch(DbConcurrencyException e)
         {
-            return BadRequest(); 
+            return RedirectToAction(nameof(Error), new { message = e.Message }); 
         }
     }
 
+    public IActionResult Error(string message)
+    {
+        var viewModel = new ErrorViewModel
+        {
+            Message = message,
+            RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+        }; 
+        return View(viewModel); 
+    }
 }
