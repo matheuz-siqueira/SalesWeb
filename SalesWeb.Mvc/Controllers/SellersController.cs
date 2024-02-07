@@ -60,4 +60,18 @@ public class SellersController : Controller
         await _sellerService.Remove(id);
         return RedirectToAction(nameof(Index));
     }
+
+    public async Task<IActionResult> Details(int? id)
+    {
+        if(id is null)
+        {
+            return NotFound(); 
+        }
+        var seller = await _sellerService.GetById(id.Value); 
+        if(seller is null)
+        {
+            return NotFound(); 
+        } 
+        return View(seller); 
+    }
 }
