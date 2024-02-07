@@ -33,12 +33,15 @@ public class SellersController : Controller
     [ValidateAntiForgeryToken]
     public async Task<ActionResult> Create(Seller seller)
     {
-        if(ModelState.IsValid)
+        if(!ModelState.IsValid)
         {
-            await _sellerService.Create(seller); 
-            return RedirectToAction(nameof(Index)); 
+            var departaments = await _departamentService.GetAll();
+            var viewModel = new SellerFormViewModel {  Seller = seller, Departaments = departaments };
+            return View(viewModel); 
         }
-        return View("Error"); 
+        await _sellerService.Create(seller); 
+        return RedirectToAction(nameof(Index)); 
+
     }
 
     public async Task<IActionResult> Delete(int? id)
@@ -99,7 +102,9 @@ public class SellersController : Controller
     {
         if(!ModelState.IsValid)
         {
-            return View("Error"); 
+            var departaments = await _departamentService.GetAll();
+            var viewModel = new SellerFormViewModel {  Seller = seller, Departaments = departaments };
+            return View(viewModel); 
         }
         if(id != seller.Id) 
         {
