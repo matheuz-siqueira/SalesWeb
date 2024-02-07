@@ -19,6 +19,7 @@ builder.Services.AddDbContext<SalesWebContext>(options =>
 
 builder.Services.AddScoped<SeedingService>();
 builder.Services.AddScoped<ISellerService, SellerService>();
+builder.Services.AddScoped<IDepartamentService, DepartamentService>();
 
 
 var app = builder.Build();

@@ -13,6 +13,12 @@ public class SellerService : ISellerService
         _context = context; 
     }
 
+    public async Task Create(Seller seller)
+    {
+        _context.Add(seller); 
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<IEnumerable<Seller>> GetAll()
     {
         return await _context.Sellers.AsNoTracking().ToListAsync(); 
