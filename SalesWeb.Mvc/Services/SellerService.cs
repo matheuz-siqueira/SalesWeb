@@ -23,4 +23,17 @@ public class SellerService : ISellerService
     {
         return await _context.Sellers.AsNoTracking().ToListAsync(); 
     }
+
+    public async Task<Seller> GetById(int id)
+    {
+        return await _context.Sellers.AsNoTracking()
+            .FirstOrDefaultAsync(seller => seller.Id == id);
+    }
+
+    public async Task Remove(int id)
+    {
+        var seller = await GetById(id); 
+        _context.Remove(seller);  
+        await _context.SaveChangesAsync();
+    }
 }
