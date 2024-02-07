@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace SalesWeb.Mvc.Models;
 
 public class Departament : BaseEntity
@@ -10,6 +12,8 @@ public class Departament : BaseEntity
         Name = name;
     }
 
+    [Required(ErrorMessage = "{0} is required")] 
+    [StringLength(40, MinimumLength = 3, ErrorMessage = "{0} size should be between {2} and {1}")]
     public string Name { get; set; }
     public ICollection<Seller> Sellers { get; set; } = new List<Seller>();
 

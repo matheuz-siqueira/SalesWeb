@@ -12,6 +12,13 @@ public class DepartamentService : IDepartamentService
     {
         _context = context; 
     }
+
+    public async Task CreateAsync(Departament departament)
+    {
+        _context.Add(departament); 
+        await _context.SaveChangesAsync();
+    }
+
     public async Task<IEnumerable<Departament>> GetAll()
     {
         return await _context.Departaments.AsNoTracking()
