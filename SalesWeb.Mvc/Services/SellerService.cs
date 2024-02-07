@@ -27,6 +27,7 @@ public class SellerService : ISellerService
     public async Task<Seller> GetById(int id)
     {
         return await _context.Sellers.AsNoTracking()
+            .Include(d => d.Departament)
             .FirstOrDefaultAsync(seller => seller.Id == id);
     }
 
