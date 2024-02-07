@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using SalesWeb.Mvc.Data;
 using SalesWeb.Mvc.Models;
 using SalesWeb.Mvc.Services.Contracts;
+using SalesWeb.Mvc.Services.Exceptions;
 
 namespace SalesWeb.Mvc.Services;
 
@@ -23,5 +24,29 @@ public class DepartamentService : IDepartamentService
     {
         return await _context.Departaments.AsNoTracking()
             .OrderBy(d => d.Name).ToListAsync(); 
+    }
+
+    public async Task<Departament> GetByIdAsync(int id)
+    {
+        return await _context.Departaments.AsNoTracking()
+            .FirstOrDefaultAsync(d => d.Id == id);
+    }
+
+    public async Task UpdateAsync(Departament departament)
+    {
+        bool hasAny = await _context.Departaments.AnyAsync(d => d.Id == departament.Id); 
+        if(!hasAny)
+        {
+            throw new NotFoundException("Departament not found"); 
+        }
+        try 
+        {
+            _context.Update(departament); 
+            await _context.SaveChangesAsync();
+        }
+        catch(DbUpdateConcurrencyException e)
+        {
+            throw new DbConcurrencyException(e.Message); 
+        }
     }
 }
