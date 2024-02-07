@@ -34,14 +34,23 @@ public class SellerService : ISellerService
 
     public async Task Remove(int id)
     {
-        var seller = await GetById(id); 
-        _context.Remove(seller);  
-        await _context.SaveChangesAsync();
+        try
+        {
+            var seller = await GetById(id); 
+            _context.Remove(seller);  
+            await _context.SaveChangesAsync();
+        }
+        catch(DbUpdateException e)
+        {
+            throw new IntegrityException("Can't delete seller because he/she has sales"); 
+        }
+        
     }
 
     public async Task Update(Seller seller)
     {
-        if(!_context.Sellers.Any(x => x.Id == seller.Id))
+        bool hasAny = await _context.Sellers.AnyAsync(x => x.Id == seller.Id); 
+        if(!hasAny)
         {
             throw new NotFoundException("Seller not found");
         }
