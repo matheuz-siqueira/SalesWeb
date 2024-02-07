@@ -40,7 +40,7 @@ public class SellerService : ISellerService
             _context.Remove(seller);  
             await _context.SaveChangesAsync();
         }
-        catch(DbUpdateException e)
+        catch(DbUpdateException)
         {
             throw new IntegrityException("Can't delete seller because he/she has sales"); 
         }
