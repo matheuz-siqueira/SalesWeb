@@ -76,6 +76,28 @@ public class DepartamentsController : Controller
         }
     }
 
+    public async Task<ActionResult> Delete(int? id)
+    {
+        if(id is null)
+        {
+            return RedirectToAction(nameof(Error), new { message = "Invalid request" }); 
+        }
+        var departament = await _departamentService.GetByIdAsync(id.Value);
+        if(departament is null)
+        {
+            return RedirectToAction(nameof(Error), new { message = "Departament not found" }); 
+        } 
+        return View(departament); 
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<ActionResult> Delete(int id)
+    {
+        await _departamentService.RemoveAsync(id); 
+        return RedirectToAction(nameof(Index));
+    }
+
     public IActionResult Error(string message)
     {
         var viewModel = new ErrorViewModel

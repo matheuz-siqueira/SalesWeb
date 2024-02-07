@@ -32,6 +32,13 @@ public class DepartamentService : IDepartamentService
             .FirstOrDefaultAsync(d => d.Id == id);
     }
 
+    public async Task RemoveAsync(int id)
+    {
+        var departament = await GetByIdAsync(id); 
+        _context.Remove(departament); 
+        await _context.SaveChangesAsync();
+    }
+
     public async Task UpdateAsync(Departament departament)
     {
         bool hasAny = await _context.Departaments.AnyAsync(d => d.Id == departament.Id); 

@@ -8,4 +8,5 @@ public interface IDepartamentService
     Task CreateAsync(Departament departament);
     Task<Departament> GetByIdAsync(int id); 
     Task UpdateAsync(Departament departament);
+    Task RemoveAsync(int id);
 }
